@@ -6,6 +6,8 @@ in [previous experimentation](https://github.com/robertwatkins/playground-robert
 Once the utility is configured and agents are enabled, notifications will be
 generated when suspicious be behavior is detected.
 
+![Sample Slack Notification](images/slack.png)
+
 ### Configure Agents
 Configuring agents consists of two essential tasks:
  - Identify training and testing logs (this could likely be simplified by only

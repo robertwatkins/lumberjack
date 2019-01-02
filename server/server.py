@@ -4,11 +4,13 @@ from flask_restful import Resource, Api
 from sqlalchemy import create_engine
 from json import dumps
 #from flask.ext.jsonpify import jsonify
+from flask_cors import CORS
 from flask.json import jsonify
 from flask_restful import Resource, Api
 
 db_connect = create_engine('sqlite:///lumberjack.db')
 app = Flask(__name__)
+CORS(app)
 api = Api(app)
 
 

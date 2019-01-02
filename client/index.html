@@ -56,12 +56,12 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
         <!-- Header -->
         <header class="w3-container" style="padding-top:22px">
             <h5><b><i class="fas fa-users fa-fw"></i> Agents </b>
-            <i class="fas fa-plus-circle"></i>
+            <i class="fas fa-plus-circle" id="addAgentsButton"></i>
             </h5>
         </header>
 
         <div class="w3-container">
-            <table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">
+            <table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white" id="agentTable">
                 <tr>
                     <td>NASA Test Log Sample</td>
                     <td>Log Path: /dev/log<br>
@@ -85,7 +85,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
         </header>
 
         <div class="w3-container">
-            <table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">
+            <table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white" id="agentsTable">
                 <tr>
                     <td>NASA Test Log Sample</td>
                     <td>Enabled: <i class="fas fa-toggle-on"></i><br>
@@ -111,9 +111,9 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
         <div class="w3-container">
             <h5>
                 Notification Channels
-                <i class="fas fa-plus-circle"></i>
+                <i class="fas fa-plus-circle" id="addNotificationChannelButton"></i>
             </h5>
-            <table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">
+            <table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white" id="notificationChannelTable">
                 <tr>
                     <td>Dev Slack Channel</td>
                     <td>url: https://slack.com</td>

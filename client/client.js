@@ -8,7 +8,11 @@ function display_agent(json){
     var agent_type = json.agent[0].agent_type;
     var log_path = json.agent[0].log_path;
     var skill_type = json.agent[0].skill_type;
-    var row = agent_table.insertRow(table_len).outerHTML="<tr><td>"+agent_name+"<br>Type: "+agent_type+"</td><td>Log Path: "+log_path+"<br>Skill: "+skill_type+"</td></tr>";
+    var agent_row = agent_table.insertRow(table_len).outerHTML="<tr><td>"+agent_name+"<br>Type: "+agent_type+"</td><td>Log Path: "+log_path+"<br>Skill: "+skill_type+"</td></tr>";
+
+    var activate_agent_table = document.getElementById("activateAgentTable");
+    var notification_channel = json.agent[0].notification_channel;
+    var activate_agent_row = activate_agent_table.insertRow(table_len).outerHTML="<tr><td>" + agent_name + "</td><td>Enabled: <i class='fas fa-toggle-on'></i><br>Notification: " + notification_channel + "</td></tr>";
 }
 
 function get_agent(id){
@@ -21,8 +25,13 @@ fetch('http://localhost:8888/agents/' + id)
   });
 }
 
-function display_agents(agents_json){
-    console.log(agents_json);
+function display_agents(json){
+    console.log(json );//+ " : " + agents_json.agents.length);
+    for(var i = 0; i < (json.agents.length); i++) {
+        var id = json.agents[i];
+        get_agent(id);
+    }
+    get_notification_channels();
 }
 
 function get_agents(){
@@ -56,7 +65,8 @@ fetch('http://localhost:8888/notification_channels')
   });
 }
 
+function update_display(){
+    get_agents();
+}
 
-get_agents();
-get_agent(1);
-get_notification_channels();
+update_display();

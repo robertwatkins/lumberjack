@@ -1,13 +1,13 @@
 
 
-function display_agent(agent_json){
-    console.log(agent_json);
+function display_agent(json){
+    console.log(json);
     var agent_table = document.getElementById("agentTable");
     var table_len=(agent_table.rows.length);
-    var agent_name = "test";
-    var agent_type = "test";
-    var log_path = "test";
-    var skill_type = "test";
+    var agent_name = json.agent[0].agent_name;
+    var agent_type = json.agent[0].agent_type;
+    var log_path = json.agent[0].log_path;
+    var skill_type = json.agent[0].skill_type;
     var row = agent_table.insertRow(table_len).outerHTML="<tr><td>"+agent_name+"<br>Type: "+agent_type+"</td><td>Log Path: "+log_path+"<br>Skill: "+skill_type+"</td></tr>";
 }
 
@@ -17,7 +17,7 @@ fetch('http://localhost:8888/agents/' + id)
       return response.json();
   })
   .then(function(myJson) {
-    display_agent(JSON.stringify(myJson));
+    display_agent(myJson);
   });
 }
 
@@ -31,14 +31,19 @@ fetch('http://localhost:8888/agents')
       return response.json();
   })
   .then(function(myJson) {
-    display_agents(JSON.stringify(myJson));
+    display_agents(myJson);
   });
 }
 
 
-function display_notification_channels(notification_channels_json){
-    console.log(notification_channels_json);
-
+function display_notification_channels(json){
+    console.log(json);
+    var notification_table = document.getElementById("notificationChannelTable");
+    var table_len=(notification_table.rows.length);
+    var channel_name = json.notification_channels[0].channel_name;
+    var channel_type = json.notification_channels[0].channel_type;
+    var configuration = json.notification_channels[0].configuration;
+    var row = notification_table.insertRow(table_len).outerHTML="<tr><td>"+channel_name+"<br>Type: "+channel_type+"</td><td>url: "+configuration+"</td></tr>";
 }
 
 function get_notification_channels(){
@@ -47,7 +52,7 @@ fetch('http://localhost:8888/notification_channels')
       return response.json();
   })
   .then(function(myJson) {
-    display_notification_channels(JSON.stringify(myJson));
+    display_notification_channels(myJson);
   });
 }
 

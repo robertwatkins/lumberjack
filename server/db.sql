@@ -4,9 +4,9 @@ CREATE TABLE IF NOT EXISTS agents(
    agent_type text,
    log_path text,
    skill_type text,
-   training_status int,
-   running_status int,
-   notification_channel int
+   training_status text,
+   running_status text,
+   notification_channel text
 );
 
 CREATE TABLE IF NOT EXISTS notification_channels(

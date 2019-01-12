@@ -27,7 +27,7 @@ class Agents(Resource):
         print(request.json)
         if not request.json:
             abort(400)
-        print(".")
+
         try:
             if 'agent_name' in request.json and type(request.json['agent_name']) != unicode:
                 abort(400)
@@ -44,16 +44,15 @@ class Agents(Resource):
             if 'training_status' in request.json and type(request.json['training_status']) != unicode:
                 abort(400)
 
-            new_agent_name = request.json.get('agents')[0].get('agent_name')
-            new_agent_type = request.json.get('agents')[0].get('agent_type')
-            new_log_path = request.json.get('agents')[0].get('log_path')
-            new_notification_channel = request.json.get('agents')[0].get('notification_channel')
-            new_running_status = request.json.get('agents')[0].get('running_status')
-            new_skill_type = request.json.get('agents')[0].get('skill_type')
-            new_training_status = request.json.get('agents')[0].get('training_status')
+            new_agent_name = request.json.get('agent')[0].get('agent_name')
+            new_agent_type = request.json.get('agent')[0].get('agent_type')
+            new_log_path = request.json.get('agent')[0].get('log_path')
+            new_notification_channel = request.json.get('agent')[0].get('notification_channel')
+            new_running_status = request.json.get('agent')[0].get('running_status')
+            new_skill_type = request.json.get('agent')[0].get('skill_type')
+            new_training_status = request.json.get('agent')[0].get('training_status')
 
-
-            insert_query = ("insert into main.notification_channels  (agent_name, agent_type, log_path ,notification_channel, running_status, skill_type, training_status, agent_id ) "
+            insert_query = ("insert into main.agents (agent_name, agent_type, log_path ,notification_channel, running_status, skill_type, training_status, agent_id ) "
             "values ('" + new_agent_name + "', '" +new_agent_type + "', '" +new_log_path + "', '" +new_notification_channel + "', '" + new_running_status + "', '" + new_skill_type + "', '" + new_training_status + "', '" + str(new_agent_id) + "');")
 
             print(insert_query)

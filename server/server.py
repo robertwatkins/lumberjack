@@ -18,7 +18,53 @@ class Agents(Resource):
     def get(self):
         conn = db_connect.connect()  # connect to database
         query = conn.execute("select * from main.agents;")  # This line performs query and returns json result
-        return {'agents': [i[0] for i in query.cursor.fetchall()]}  # Fetches first column that is Employee ID
+        return {'agents': [i[0] for i in query.cursor.fetchall()]}  # Fetches first column that is Agent ID
+
+    def post(self):
+        # This does not currently allow sending only some fields. All fields must be specified.
+        new_agent_id = max(self.get().get('agents')) + 1
+        print(new_agent_id)
+        print(request.json)
+        if not request.json:
+            abort(400)
+        print(".")
+        try:
+            if 'agent_name' in request.json and type(request.json['agent_name']) != unicode:
+                abort(400)
+            if 'agencurt_type' in request.json and type(request.json['agent_type']) != unicode:
+                abort(400)
+            if 'log_path' in request.json and type(request.json['log_path']) != unicode:
+                abort(400)
+            if 'notification_channel' in request.json and type(request.json['notification_channel']) != unicode:
+                abort(400)
+            if 'running_status' in request.json and type(request.json['running_status']) != unicode:
+                abort(400)
+            if 'skill_type' in request.json and type(request.json['skill_type']) != unicode:
+                abort(400)
+            if 'training_status' in request.json and type(request.json['training_status']) != unicode:
+                abort(400)
+
+            new_agent_name = request.json.get('agents')[0].get('agent_name')
+            new_agent_type = request.json.get('agents')[0].get('agent_type')
+            new_log_path = request.json.get('agents')[0].get('log_path')
+            new_notification_channel = request.json.get('agents')[0].get('notification_channel')
+            new_running_status = request.json.get('agents')[0].get('running_status')
+            new_skill_type = request.json.get('agents')[0].get('skill_type')
+            new_training_status = request.json.get('agents')[0].get('training_status')
+
+
+            insert_query = ("insert into main.notification_channels  (agent_name, agent_type, log_path ,notification_channel, running_status, skill_type, training_status, agent_id ) "
+            "values ('" + new_agent_name + "', '" +new_agent_type + "', '" +new_log_path + "', '" +new_notification_channel + "', '" + new_running_status + "', '" + new_skill_type + "', '" + new_training_status + "', '" + str(new_agent_id) + "');")
+
+            print(insert_query)
+            conn = db_connect.connect()
+            query = conn.execute(insert_query)
+            result_json = jsonify({'result': 'success'})
+        except TypeError:
+            result_json = jsonify({'result': 'failure'})
+
+        return result_json
+
 
 class Agent_By_Id(Resource):
     def get(self, agent_id):
@@ -30,30 +76,19 @@ class Agent_By_Id(Resource):
     def put(self):
         pass
 
-    def post(self):
-        pass
 
 class Notification_Channels(Resource):
     def get(self):
         conn = db_connect.connect()
         query = conn.execute("select * from main.notification_channels;")
-        result = {'notification_channels': [dict(zip(tuple(query.keys()), i)) for i in query.cursor]}
-        return jsonify(result)
+        # result = {'notification_channels': [dict(zip(tuple(query.keys()), i)) for i in query.cursor]}
+        # return jsonify(result)
 
-class Notification_Channels_By_Id(Resource):
-    def get(self, channel_id):
-        conn = db_connect.connect()
-        query = conn.execute("select * from main.notification_channels where channel_id=%d;" % int(channel_id))
-        result = {'notification_channels': [dict(zip(tuple(query.keys()), i)) for i in query.cursor]}
-        return jsonify(result)
+        return {'notification_channels': [i[0] for i in query.cursor.fetchall()]}
 
-    def put(self, channel_id):
-        # notification = [notification for notification in notifications if notification['id'] == channel_id]
-        # if len(notification) == 0:
-        #    abort(404)
-
-        # notification = self.get(channel_id)
-        notification = {"notification_channels":[{"channel_id":1,"channel_name":"Dev Slack","channel_type":"Slack","configuration":"https://hooks.slack.com/services/"}]}
+    def post(self):
+        # This does not currently allow sending only some fields. All fields must be specified.
+        channel_id = max(self.get().get('notification_channels')) + 1
 
         if not request.json:
             abort(400)
@@ -63,26 +98,64 @@ class Notification_Channels_By_Id(Resource):
             abort(400)
         if 'configuration' in request.json and type(request.json['configuration']) is not unicode:
             abort(400)
-        # notification[0]['channel_name'] = request.json.get('channel_name', notification[0]['channel_name'])
-        # notification[0]['channel_type'] = request.json.get('channel_type', notification[0]['channel_type'])
-        # notification[0]['configuration'] = request.json.get('configuration', notification[0]['configuration'])
-        conn = db_connect.connect()
+
         new_channel_name = request.json.get('notification_channels')[0].get('channel_name')
         new_channel_type = request.json.get('notification_channels')[0].get('channel_type')
         new_configuration = request.json.get('notification_channels')[0].get('configuration')
-        update_query = ("update main.notification_channels set "
-        "channel_name = '" + new_channel_name + "', "
-        "channel_type = '" + new_channel_type + "', "
-        "configuration = '" + new_configuration + "' "
-        "where channel_id = " + str(channel_id) + ";")
-        print(update_query)
-        query = conn.execute(update_query)
-        result_json = jsonify({'result': 'success'})
+        try:
+            insert_query = ("insert into main.notification_channels  (channel_name, channel_type, configuration, channel_id ) "
+            "values ('" + new_channel_name + "', '" + new_channel_type + "', '" + new_configuration + "', '" + str(channel_id) + "');")
+
+            print(insert_query)
+            conn = db_connect.connect()
+            query = conn.execute(insert_query)
+            result_json = jsonify({'result': 'success'})
+        except TypeError:
+            result_json = jsonify({'result': 'failure'})
+
         return result_json
 
-    def post(self, channel_id):
-        pass
+class Notification_Channels_By_Id(Resource):
+    def get(self, channel_id):
+        conn = db_connect.connect()
+        query = conn.execute("select * from main.notification_channels where channel_id=%d;" % int(channel_id))
+        result = {'notification_channels': [dict(zip(tuple(query.keys()), i)) for i in query.cursor]}
+        return jsonify(result)
 
+    def put(self, channel_id):
+        return self.add_or_update(channel_id)
+
+    def post(self, channel_id):
+        # This does not currently allow sending only updated fields. All fields must be specified.
+        # There is no check to ensure that the ID already exists.
+        # notification = self.get(channel_id).json
+
+        if not request.json:
+            abort(400)
+        if 'channel_name' in request.json and type(request.json['channel_name']) != unicode:
+            abort(400)
+        if 'channel_type' in request.json and type(request.json['channel_type']) is not unicode:
+            abort(400)
+        if 'configuration' in request.json and type(request.json['configuration']) is not unicode:
+            abort(400)
+
+        new_channel_name = request.json.get('notification_channels')[0].get('channel_name')
+        new_channel_type = request.json.get('notification_channels')[0].get('channel_type')
+        new_configuration = request.json.get('notification_channels')[0].get('configuration')
+        try:
+            update_query = ("update main.notification_channels set "
+            "channel_name = '" + new_channel_name + "', "
+            "channel_type = '" + new_channel_type + "', "
+            "configuration = '" + new_configuration + "' "
+            "where channel_id = " + str(channel_id) + ";")
+            print(update_query)
+            conn = db_connect.connect()
+            query = conn.execute(update_query)
+            result_json = jsonify({'result': 'success'})
+        except TypeError:
+            result_json = jsonify({'result': 'failure'})
+
+        return result_json
 
 api.add_resource(Agents, '/agents')
 api.add_resource(Agent_By_Id, '/agents/<agent_id>')

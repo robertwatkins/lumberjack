@@ -1,4 +1,39 @@
 
+function process_create_agent_modal(){
+  default_agent_type = "Apache";
+  default_notification_channel = "";
+  default_running_status = "Not Running";
+  default_training_status = "";
+
+  var form = document.forms["createAgentModalForm"]
+  json = '{"agent":[{"agent_name":"' + form["agentname"].value + '","agent_type":"' + default_agent_type + '","log_path":"'+form["logpath"].value +'","running_status":"'+ default_running_status+'","skill_type":"'+form["skill"].value+'", "notification_channel":"'+ default_notification_channel+'", "training_status": "' + default_training_status + '"}]}';
+  add_agent(json);
+}
+
+function delete_agent(id){
+    fetch('http://localhost:8888/agents/' + id,{
+        method: 'delete'
+    }).then(function(response) {
+      return response.json();
+  })
+  .then(res => update_display());
+}
+
+function add_agent(json){
+  console.log(json);
+  fetch('http://localhost:8888/agents', {
+    method: 'post',
+    headers: {
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json'
+    },
+    //body: JSON.stringify(json)
+    body: json
+    }).then(res=>res.json())
+    .then(res => console.log(res))
+    .then(res => update_display());
+  close_modal("createAgentModal");
+}
 
 function display_agent(json){
     console.log(json);
@@ -8,7 +43,8 @@ function display_agent(json){
     var agent_type = json.agent[0].agent_type;
     var log_path = json.agent[0].log_path;
     var skill_type = json.agent[0].skill_type;
-    var agent_row = agent_table.insertRow(table_len).outerHTML="<tr><td>"+agent_name+"<br>Type: "+agent_type+"</td><td>Log Path: "+log_path+"<br>Skill: "+skill_type+"</td></tr>";
+    var agent_id = json.agent[0].agent_id;
+    var agent_row = agent_table.insertRow(table_len).outerHTML="<tr><td>"+agent_name+"<br>Type: "+agent_type+"</td><td>Log Path: "+log_path+"<br>Skill: "+skill_type+"</td><td><i class='fas fa-trash' onclick='delete_agent("+ agent_id +");'></i></td></tr>";
 
     var activate_agent_table = document.getElementById("activateAgentTable");
     var notification_channel = json.agent[0].notification_channel;
@@ -83,7 +119,13 @@ fetch('http://localhost:8888/notification_channels')
 }
 
 function update_display(){
+    var table = document.getElementById("agentTable")
+    table.innerHTML = "";
+    document.getElementById("activateAgentTable").innerHTML = "";
+    document.getElementById("notificationChannelTable").innerHTML = "";
     get_agents();
 }
 
-update_display();
+function close_modal(id){
+  document.getElementById(id).style.display='none'
+}

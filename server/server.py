@@ -1,4 +1,5 @@
 #pip install flask flask-jsonpify flask-sqlalchemy flask-restful flask-cache
+import traceback
 from flask import Flask, request
 from flask_restful import Resource, Api
 from sqlalchemy import create_engine
@@ -60,6 +61,7 @@ class Agents(Resource):
             query = conn.execute(insert_query)
             result_json = jsonify({'result': 'success'})
         except TypeError:
+            print(traceback.format_exc())
             result_json = jsonify({'result': 'failure'})
 
         return result_json
@@ -72,9 +74,9 @@ class Agent_By_Id(Resource):
         result = {'agent': [dict(zip(tuple(query.keys()), i)) for i in query.cursor]}
         return jsonify(result)
 
-    def put(self):
-        pass
-
+    def delete(self, agent_id):
+        conn = db_connect.connect()
+        query = conn.execute("delete from main.agents where agent_id =%d;" % int(agent_id))
 
 class Notification_Channels(Resource):
     def get(self):
@@ -121,40 +123,9 @@ class Notification_Channels_By_Id(Resource):
         result = {'notification_channels': [dict(zip(tuple(query.keys()), i)) for i in query.cursor]}
         return jsonify(result)
 
-    def put(self, channel_id):
-        return self.add_or_update(channel_id)
-
-    def post(self, channel_id):
-        # This does not currently allow sending only updated fields. All fields must be specified.
-        # There is no check to ensure that the ID already exists.
-        # notification = self.get(channel_id).json
-
-        if not request.json:
-            abort(400)
-        if 'channel_name' in request.json and type(request.json['channel_name']) != unicode:
-            abort(400)
-        if 'channel_type' in request.json and type(request.json['channel_type']) is not unicode:
-            abort(400)
-        if 'configuration' in request.json and type(request.json['configuration']) is not unicode:
-            abort(400)
-
-        new_channel_name = request.json.get('notification_channels')[0].get('channel_name')
-        new_channel_type = request.json.get('notification_channels')[0].get('channel_type')
-        new_configuration = request.json.get('notification_channels')[0].get('configuration')
-        try:
-            update_query = ("update main.notification_channels set "
-            "channel_name = '" + new_channel_name + "', "
-            "channel_type = '" + new_channel_type + "', "
-            "configuration = '" + new_configuration + "' "
-            "where channel_id = " + str(channel_id) + ";")
-            print(update_query)
-            conn = db_connect.connect()
-            query = conn.execute(update_query)
-            result_json = jsonify({'result': 'success'})
-        except TypeError:
-            result_json = jsonify({'result': 'failure'})
-
-        return result_json
+    def delete(self, channel_id):
+        conn = db_connect.connect()
+        query = conn.execute("delete from main.notification_channels where channel_id =%d;" % int(agent_id))
 
 api.add_resource(Agents, '/agents')
 api.add_resource(Agent_By_Id, '/agents/<agent_id>')

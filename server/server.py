@@ -125,7 +125,7 @@ class Notification_Channels_By_Id(Resource):
 
     def delete(self, channel_id):
         conn = db_connect.connect()
-        query = conn.execute("delete from main.notification_channels where channel_id =%d;" % int(agent_id))
+        query = conn.execute("delete from main.notification_channels where channel_id =%d;" % int(channel_id))
 
 api.add_resource(Agents, '/agents')
 api.add_resource(Agent_By_Id, '/agents/<agent_id>')

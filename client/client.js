@@ -80,6 +80,16 @@ fetch('http://localhost:8888/agents')
   });
 }
 
+function delete_channel(id){
+    fetch('http://localhost:8888/notification_channels/' + id,{
+        method: 'delete'
+    }).then(function(response) {
+      return response.json();
+  })
+  .then(res => update_display());
+}
+
+
 function get_notification_channel(id){
 fetch('http://localhost:8888/notification_channels/' + id)
   .then(function(response) {
@@ -105,7 +115,8 @@ function display_notification_channels(json){
    var channel_name = json.notification_channels[0].channel_name;
    var channel_type = json.notification_channels[0].channel_type;
    var configuration = json.notification_channels[0].configuration;
-   var row = notification_table.insertRow(table_len).outerHTML="<tr><td>"+channel_name+"<br>Type: "+channel_type+"</td><td>url: "+configuration+"</td></tr>";
+   var channel_id = json.notification_channels[0].channel_id;
+   var row = notification_table.insertRow(table_len).outerHTML="<tr><td>"+channel_name+"<br>Type: "+channel_type+"</td><td>url: "+configuration+"</td><td><i class='fas fa-trash' onclick='delete_channel("+ channel_id +");'></i></td></tr>";
 }
 
 function get_notification_channels(){

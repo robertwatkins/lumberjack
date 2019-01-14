@@ -44,11 +44,22 @@ function display_agent(json){
     var log_path = json.agent[0].log_path;
     var skill_type = json.agent[0].skill_type;
     var agent_id = json.agent[0].agent_id;
-    var agent_row = agent_table.insertRow(table_len).outerHTML="<tr><td>"+agent_name+"<br>Type: "+agent_type+"</td><td>Log Path: "+log_path+"<br>Skill: "+skill_type+"</td><td><i class='fas fa-trash' onclick='delete_agent("+ agent_id +");'></i></td></tr>";
+    var training_status = json.agent[0].training_status;
+    var agent_row = agent_table.insertRow(table_len).outerHTML="<tr><td><b>"+agent_name+"</b><br>Type: "+agent_type+"<br>Training Status:<div class='chart-container' style='position: relative; height:30px; width:30px;responsive:false;'><canvas id='trainingChart_" + agent_id + "' width='30' height='30' style='flex:none;'></canvas></div></td><td>Log Path: "+log_path+"<br>Skill: "+skill_type+"</td><td><i class='fas fa-trash' onclick='delete_agent("+ agent_id +");'></i></td></tr>";
+    if (training_status == ""){
+         training_percent_complete = 0;
+    }
+    else if (training_status == "Done") {
+         training_percent_complete = 100;
+    }
+    else {
+         training_percent_complete = 50;
+    }
 
+    showTrainingProgress(agent_id,training_percent_complete);
     var activate_agent_table = document.getElementById("activateAgentTable");
     var notification_channel = json.agent[0].notification_channel;
-    var activate_agent_row = activate_agent_table.insertRow(table_len).outerHTML="<tr><td>" + agent_name + "</td><td>Enabled: <i class='fas fa-toggle-on'></i><br>Notification: " + notification_channel + "</td></tr>";
+    var activate_agent_row = activate_agent_table.insertRow(table_len).outerHTML="<tr><td><b>" + agent_name + "</b></td><td>Enabled: <i class='fas fa-toggle-on'></i><br>Notification: " + notification_channel + "</td></tr>";
 }
 
 function get_agent(id){
@@ -140,3 +151,30 @@ function update_display(){
 function close_modal(id){
   document.getElementById(id).style.display='none'
 }
+
+function showTrainingProgress(id,complete){
+    ctx = document.getElementById("trainingChart_"+id).getContext("2d");
+    ctx.canvas.width = 30;
+    ctx.canvas.height = 30;
+    data = {
+        datasets: [{
+            data: [0, 0],
+            backgroundColor: ['green', 'lightgray']
+        }],
+        labels:['Complete','Incomplete']
+    };
+
+     options = {
+        cutoutPercentage: 50,
+        legend: {
+                display: false
+        }
+    };
+    data.datasets[0].data[0]=complete;
+    data.datasets[0].data[1]=100 - complete;
+      var myPieChart = new Chart(ctx,{
+        type: 'pie',
+        data: data,
+        options: options
+    });
+};

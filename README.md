@@ -6,81 +6,21 @@ in [previous experimentation](https://github.com/robertwatkins/playground-robert
 Once the utility is configured and agents are enabled, notifications will be
 generated when suspicious be behavior is detected.
 
-![Sample Slack Notification](images/slack.png)
+### Components
+**Admin Console**
 
-### Configure Agents
-Configuring agents consists of two essential tasks:
- - Identify training and testing logs (this could likely be simplified by only
- referencing the source log location)
- - Enabling specific skills for the logs.
- 
- The skills needed to configure agents is someone with strong Data Analysis 
-abilities to understand the suitability and usefulness of the results of
-using that skill. Segregating this functionality from the administration
-should aid in promoting separation of duties.
- 
- NOTE: All the logs for a particular agent should have consistent formatting.
- 
- **Skills**
- 
- Depending on the type of log file being analyzed as well as the specific
- aspects of the log being analyzed, different skills can be applied.
- 
- New skills can be added over time as needs change and as new skills are 
- available.
-![Configure Agents](images/configure.png)
+The admin console allows security users to identify the location of log files to analyze as well as what kinds of analysis to perform.
 
-### Administration
-**Users**
+Once that configuration is in place, a 'Notification Channel' is selected and the agent can be enabled to start anlyzing the logs.
 
-This will only be for demo purposes and not be linked to actual user permissions
+**Training Daemon**
 
-**Notification Channels**
+This process will look for agent training tasks to perform to build out the machine learning skills specified in the configuration.
 
-Whether you are getting notified through text, Slack or some other mechanism,
-this is the screen where that configuration is managed. It's also useful to
-consider setting up notifications by team or application, depending on what
-is most convenient for your use.
+**Agent Daemon**
 
-![Adminstration](images/administration.png)
+Once trained and enabled, the agent will process new log entries looking for anomalous behavior. Suspicious behavior will be logged using the configured notificaiton channel (Slack, Jira, SEIM tool, etc.)
 
 
-### Manage Agents
-Agents are connected to notification channels and can be enabled and disabled.
-
-The _Conditions_ section will not be implemented in this 
-![Manage Agents](images/manage.png)
-
-
-### Home Page
-This page is for demonstration purposes and will not be implemented as part of
-the proof of concept.
-
-![Home Page](images/home.png)
-
-
-### Out of Scope items
-While these items would be useful for a final product, they are not included in
-this proof-of-concept.
-
-**Screenshot Items that are out of scope**
-- Home Page 
-  - Notifications
-  - System Health
-- Administration
-  - User Administration
-- Manage Agents
-  - Condition configuration  
-
-
-**Other Items that are out of scope**
- - Audit logging (user management, agent configuration and management, etc.)
- - Plugin support 
-   - New log formats
-   - New skills
-   - Notification targets (email, text, Veracode, OSSIM, 
-SEIMonster, Jira, etc.)
- - OAUTH 2.0 support
- - Since training is a lengthy process, estimated time to completion will not
- be included
- 
+### System Architecture
+![System Architecture](images/SystemDiagram.png)

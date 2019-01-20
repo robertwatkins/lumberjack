@@ -2,6 +2,7 @@
 
 #pip install flask flask-jsonpify flask-sqlalchemy flask-restful flask-cache
 import traceback
+import sys
 from flask import Flask, request
 from flask_restful import Resource, Api
 from sqlalchemy import create_engine
@@ -23,10 +24,10 @@ class Agents(Resource):
         query = conn.execute("select * from main.agents;")  # This line performs query and returns json result
         return {'agents': [i[0] for i in query.cursor.fetchall()]}  # Fetches first column that is Agent ID
 
+    @property
     def post(self):
         # This does not currently allow sending only some fields. All fields must be specified.
         new_agent_id = max(self.get().get('agents')) + 1
-        print(new_agent_id)
         print(request.json)
         if not request.json:
             abort(400)
@@ -75,6 +76,63 @@ class Agent_By_Id(Resource):
         query = conn.execute("select * from main.agents where agent_id =%d;" % int(agent_id))
         result = {'agent': [dict(zip(tuple(query.keys()), i)) for i in query.cursor]}
         return jsonify(result)
+
+    def put(self, agent_id):
+        # This does not currently allow sending only some fields. All fields must be specified.
+        if not request.json:
+            abort(400)
+
+        try:
+            if 'agent_name' in request.json and type(request.json['agent_name']) != unicode:
+                print("invalid agent_name")
+                abort(400)
+            if 'agent_type' in request.json and type(request.json['agent_type']) != unicode:
+                print("invalid agent_type")
+                abort(400)
+            if 'log_path' in request.json and type(request.json['log_path']) != unicode:
+                print("invalid log path")
+                abort(400)
+            if 'notification_channel' in request.json and type(request.json['notification_channel']) != unicode:
+                print("invalid notification channel")
+                abort(400)
+            if 'running_status' in request.json and type(request.json['running_status']) != unicode:
+                print("invalid running_status")
+                abort(400)
+            if 'skill_type' in request.json and type(request.json['skill_type']) != unicode:
+                print("invalid skill type")
+                abort(400)
+            if 'training_status' in request.json and type(request.json['training_status']) != unicode:
+                print("invalid training status")
+                abort(400)
+
+            new_agent_name = request.json.get('agent')[0].get('agent_name')
+            new_agent_type = request.json.get('agent')[0].get('agent_type')
+            new_log_path = request.json.get('agent')[0].get('log_path')
+            new_notification_channel = request.json.get('agent')[0].get('notification_channel')
+            new_running_status = request.json.get('agent')[0].get('running_status')
+            new_skill_type = request.json.get('agent')[0].get('skill_type')
+            new_training_status = request.json.get('agent')[0].get('training_status')
+
+            update_query = ("update main.agents set agent_name = '"+ new_agent_name + "', " +
+                            "agent_type = '"+new_agent_type + "', " +
+                            "log_path  = '"+new_log_path + "', " +
+                            "notification_channel = '" +new_notification_channel + "', " +
+                            "running_status = '"+ new_running_status + "', " +
+                            "skill_type = '"+ new_skill_type + "', " +
+                            "training_status = '"+ new_training_status + "' " +
+                            " where agent_id = '" + agent_id + "';")
+
+            print(update_query)
+            conn = db_connect.connect()
+            query = conn.execute(update_query)
+            result_json = jsonify({'result': 'success'})
+        except TypeError:
+            print(traceback.format_exc())
+            result_json = jsonify({'result': 'failure'})
+
+        return result_json
+
+
 
     def delete(self, agent_id):
         conn = db_connect.connect()

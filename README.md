@@ -42,13 +42,16 @@ WARNING: I haven't verified that these are complete and accurate. However, they 
 
  - Start http server
  - Start rest service (http://localhost:8888)
+ 
         cd <install directory for 'server' folder>
         python server.py
  - Start trainer daemon
+ 
         cd <install directory for 'daemon' folder>
         ./trainer.py start
         (Note: './trainer.py stop' will stop the service)
  - Start runner daemon
+ 
         cd <install directory for 'daemon' folder>
         ./runner.py start
         (Note: './runner.py stop' will stop the service)

@@ -1,4 +1,7 @@
-"""Generic linux daemon base class for python 3.x."""
+"""
+Generic linux daemon base class for python 3.x.
+http://www.jejik.com/articles/2007/02/a_simple_unix_linux_daemon_in_python/
+"""
 
 import sys, os, time, atexit, signal
 
@@ -39,20 +42,7 @@ class Daemon:
             print("fork #2 failed: {0}".format(err))
             sys.stderr.write('fork #2 failed: {0}\n'.format(err))
             sys.exit(1)
-        # redirect standard file descriptors
-        sys.stdout.flush()
-        sys.stderr.flush()
-        # si = open(os.devnull, 'r')
-        # so = open(os.devnull, 'a+')
-        # se = open(os.devnull, 'a+')
-        # print("duplicate")
-        # try:
-        #     os.dup2(si.fileno(), sys.stdin.fileno())
-        #     os.dup2(so.fileno(), sys.stdout.fileno())
-        #     os.dup2(se.fileno(), sys.stderr.fileno())
-        # except Exception as err:
-        #     print(err)
-        # write pidfile
+
         atexit.register(self.delpid)
 
         pid = str(os.getpid())

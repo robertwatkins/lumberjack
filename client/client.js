@@ -82,7 +82,7 @@ function display_agent(json){
     var running_status = json.agent[0].running_status;
     var onclick = "";
     var toggle = "";
-    if (running_status  == "Running") {
+    if ((running_status  == "Running") || (running_status == "Pending Start") ) {
         toggle = "fa-toggle-on greeniconcolor";
         onclick = "onclick='stop_agent(" + agent_id + ");'"
     } else { if (training_status != "100") {

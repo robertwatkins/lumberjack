@@ -1,5 +1,5 @@
 #!/usr/local/bin/python3
-import sys, time, requests, json
+import sys, time, requests, json, _thread, datetime
 from daemon import Daemon
 
 class Runner(Daemon):
@@ -15,7 +15,7 @@ class Runner(Daemon):
             agentInfo = json.loads(requests.get(url).content)
             print(agentInfo)
             running_status = agentInfo["agent"][0]["running_status"]
-            if (running_status == "Running"):
+            if running_status == "Pending Start":
                 agent_id = agentInfo["agent"][0]["agent_id"]
                 agentList.append(agent_id)
 
@@ -24,9 +24,19 @@ class Runner(Daemon):
 
     def runAgents(self,agentList):
         print("Starting Agents: " + str(agentList))
-        while True:
-            for agent_id in agentList:
-                self.runAgent(agent_id)
+        #while True:
+        for agent_id in agentList:
+            url = self.apiServer + "/agents/" + str(agent_id)
+            agentInfo = json.loads(requests.get(url).content)
+            agentInfo["agent"][0]["running_status"] = "Running"
+            data_json = json.dumps(agentInfo)
+            headers = {'Content-type': 'application/json'}
+            response = requests.put(url, data=data_json, headers=headers)
+            try:
+                _thread.start_new_thread(self.runAgent, (agent_id,))
+            except Exception as ex:
+                print("Error: unable to start thread: " + str(ex))
+        time.sleep(30)
 
 
     def runAgent(self,agent_id):
@@ -38,7 +48,7 @@ class Runner(Daemon):
                 {
                     "author_name": "Owner: rwatkins",
                     "title": "Alert Details",
-                    "text": "Connection from 201.1.41.241 at 11:57am cannot be classified as expected usage.\n"
+                    "text": "Connection from 201.1.41.241 at " + str(datetime.datetime.time(datetime.datetime.now())) +"cannot be classified as expected usage.\n"
                             + "Additional Details:\n"
                             + "First connection:10:49am\n"
                             + "Average Request Size: 930b\n"
@@ -77,7 +87,6 @@ class Runner(Daemon):
         data_json = json.dumps(payload)
         headers = {'Content-type': 'application/json'}
         response = requests.post(slackUrl, data=data_json, headers=headers)
-        print(response)
 
 
     def run(self):

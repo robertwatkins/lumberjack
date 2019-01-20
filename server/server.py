@@ -142,14 +142,16 @@ class Agent_By_Id(Resource):
 class Agent_Activation(Resource):
 
     def post(self, agent_id, activation_action):
+        print("Activation request: " + activation_action)
         conn = db_connect.connect()
         sql = ""
         if activation_action == "start":
-            sql = "update main.agents set running_status = 'Running' where agent_id = " + agent_id + ";"
+            sql = "update main.agents set running_status = 'Pending Start' where agent_id = " + agent_id + ";"
         else:
             if activation_action == "stop":
                 sql = "update main.agents set running_status = 'Not Running' where agent_id = " + agent_id + ";"
         if sql != "":
+            print(sql)
             conn.execute(sql)
 
 class Notification_Channels(Resource):

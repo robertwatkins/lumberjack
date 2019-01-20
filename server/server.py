@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-#pip install flask flask-jsonpify flask-sqlalchemy flask-restful flask-cache
+#pip install flask flask-jsonify flask-sqlalchemy flask-restful flask-cache
 import traceback
 import sys
 from flask import Flask, request
@@ -27,7 +27,10 @@ class Agents(Resource):
     @property
     def post(self):
         # This does not currently allow sending only some fields. All fields must be specified.
-        new_agent_id = max(self.get().get('agents')) + 1
+        try:
+            new_agent_id = max(self.get().get('agents')) + 1
+        except:
+            new_agent_id = 1
         print(request.json)
         if not request.json:
             abort(400)
@@ -165,7 +168,10 @@ class Notification_Channels(Resource):
 
     def post(self):
         # This does not currently allow sending only some fields. All fields must be specified.
-        channel_id = max(self.get().get('notification_channels')) + 1
+        try:
+            channel_id = max(self.get().get('notification_channels')) + 1
+        except:
+            channel_id = 1
 
         if not request.json:
             abort(400)

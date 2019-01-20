@@ -24,3 +24,33 @@ Once trained and enabled, the agent will process new log entries looking for ano
 
 ### System Architecture
 ![System Architecture](images/SystemDiagram.png)
+
+### Installation
+For now this will need to be installed manually all on the same system. 
+
+WARNING: I haven't verified that these are complete and accurate. However, they do describe essential steps.
+
+**Pre-requisites**
+ - http server (Apache, NodeJS, etc.) on port 80
+    - Copy all client files and subfolders to the root of your http server.
+ - Python 3 libraries
+    - pip install flask flask-jsonify flask-sqlalchemy flask-restful flask-cache
+ - sqlite db
+    - sqlite3 lumberjack.db < ../data/db.sql
+
+### Startup
+
+ - Start http server
+ - Start rest service (http://localhost:8888)
+        cd <install directory for 'server' folder>
+        python server.py
+ - Start trainer daemon
+        cd <install directory for 'daemon' folder>
+        ./trainer.py start
+        (Note: './trainer.py stop' will stop the service)
+ - Start runner daemon
+        cd <install directory for 'daemon' folder>
+        ./runner.py start
+        (Note: './runner.py stop' will stop the service)
+ - Launch your browser to your web server
+ 

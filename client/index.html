@@ -90,7 +90,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
         <div class="w3-container">
             <h5>
                 Notification Channels
-                <i class="fas fa-plus-circle" id="addNotificationChannelButton" onclick="document.getElementById('notificationModal').style.display='block'"></i>
+                <i class="fas fa-plus-circle" id="addNotificationChannelButton" onclick="document.getElementById('createNotificationModal').style.display='block'"></i>
             </h5>
             <table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white" id="notificationChannelTable">
             </table>
@@ -157,20 +157,20 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
         </div>
     </div>
 
-    <div id="notificationModal" class="w3-modal">
+    <div id="createNotificationModal" class="w3-modal">
         <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
-          <form class="w3-container" action="javascript:process_notification_modal();">
+          <form class="w3-container" action="javascript:process_create_notification_modal();" id="createNotificationModalForm">
             <div class="w3-section">
               <label><b>Notification Channel Name</b></label>
-              <input class="w3-input w3-border w3-margin-bottom" type="text" placeholder="Enter Notification Channel Name" name="notificationname" required>
+              <input class="w3-input w3-border w3-margin-bottom" type="text" placeholder="Enter Notification Channel Name" name="channel_name" required>
               <label><b>Slack Incoming Webhook URL</b></label>
-              <input class="w3-input w3-border" placeholder="Enter Slack Incoming Webhook URL" name="slackurl" required>
+              <input class="w3-input w3-border" placeholder="Enter Slack Incoming Webhook URL" name="configuration" required>
               <button class="w3-button w3-block w3-green w3-section w3-padding" type="submit">Create</button>
             </div>
           </form>
 
           <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
-            <button onclick="close_modal('notificationModal');" type="button" class="w3-button w3-red">Cancel</button>
+            <button onclick="close_modal('createNotificationModal');" type="button" class="w3-button w3-red">Cancel</button>
           </div>
 
         </div>

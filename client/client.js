@@ -175,6 +175,33 @@ fetch('http://localhost:8888/notification_channels')
   });
 }
 
+function process_create_notification_modal(){
+
+  channel_id = -1
+  default_channel_type = "Slack"
+
+  var form = document.forms["createNotificationModalForm"]
+  json = '{"notification_channels":[{"channel_id":"' + channel_id + '","channel_name":"' + form["channel_name"].value + '","channel_type":"'+ default_channel_type +'","configuration":"'+ form["configuration"].value +'"}]}';
+  add_channel(json);
+}
+
+function add_channel(json){
+  console.log(json);
+  fetch('http://localhost:8888/notification_channels', {
+    method: 'post',
+    headers: {
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json'
+    },
+    //body: JSON.stringify(json)
+    body: json
+    }).then(res=>res.json())
+    .then(res => console.log(res))
+    .then(res => update_display());
+  close_modal("createNotificationModal");
+}
+
+
 function update_display(){
     var table = document.getElementById("agentTable")
     table.innerHTML = "";

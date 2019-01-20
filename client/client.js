@@ -35,6 +35,26 @@ function add_agent(json){
   close_modal("createAgentModal");
 }
 
+function start_agent(id){
+  url = 'http://localhost:8888/agents/'+id;
+  fetch('http://localhost:8888/agents/' + id + "/activation/start", {
+    method: 'post'
+    }).then(res=>res.json())
+    .then(res => console.log(res))
+    .then(res => update_display());
+
+}
+
+function stop_agent(id){
+  url = 'http://localhost:8888/agents/'+id;
+  fetch('http://localhost:8888/agents/' + id + "/activation/stop", {
+    method: 'post'
+    }).then(res=>res.json())
+    .then(res => console.log(res))
+    .then(res => update_display());
+
+}
+
 function display_agent(json){
     console.log(json);
     var agent_table = document.getElementById("agentTable");
@@ -59,7 +79,22 @@ function display_agent(json){
     showTrainingProgress(agent_id,training_percent_complete);
     var activate_agent_table = document.getElementById("activateAgentTable");
     var notification_channel = json.agent[0].notification_channel;
-    var activate_agent_row = activate_agent_table.insertRow(table_len).outerHTML="<tr><td><b>" + agent_name + "</b></td><td>Enabled: <i class='fas fa-toggle-on'></i><br>Notification: " + notification_channel + "</td></tr>";
+    var running_status = json.agent[0].running_status;
+    var onclick = "";
+    var toggle = "";
+    if (running_status  == "Running") {
+        toggle = "fa-toggle-on greeniconcolor";
+        onclick = "onclick='stop_agent(" + agent_id + ");'"
+    } else { if (training_status != "100") {
+            toggle = "fa-toggle-off grayiconcolor";
+        } else {
+            toggle = "fa-toggle-off greeniconcolor";
+            onclick = "onclick='start_agent(" + agent_id + ");'"
+        }
+    }
+
+
+    var activate_agent_row = activate_agent_table.insertRow(table_len).outerHTML="<tr><td><b>" + agent_name + "</b></td><td>Enabled: <i " + onclick + " class='fas " + toggle + "'></i><br>Notification: " + notification_channel + "</td></tr>";
 }
 
 function get_agent(id){

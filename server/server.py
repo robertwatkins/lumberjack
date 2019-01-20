@@ -138,6 +138,20 @@ class Agent_By_Id(Resource):
         conn = db_connect.connect()
         query = conn.execute("delete from main.agents where agent_id =%d;" % int(agent_id))
 
+
+class Agent_Activation(Resource):
+
+    def post(self, agent_id, activation_action):
+        conn = db_connect.connect()
+        sql = ""
+        if activation_action == "start":
+            sql = "update main.agents set running_status = 'Running' where agent_id = " + agent_id + ";"
+        else:
+            if activation_action == "stop":
+                sql = "update main.agents set running_status = 'Not Running' where agent_id = " + agent_id + ";"
+        if sql != "":
+            conn.execute(sql)
+
 class Notification_Channels(Resource):
     def get(self):
         conn = db_connect.connect()
@@ -187,8 +201,10 @@ class Notification_Channels_By_Id(Resource):
         conn = db_connect.connect()
         query = conn.execute("delete from main.notification_channels where channel_id =%d;" % int(channel_id))
 
+
 api.add_resource(Agents, '/agents')
 api.add_resource(Agent_By_Id, '/agents/<agent_id>')
+api.add_resource(Agent_Activation, '/agents/<agent_id>/activation/<activation_action>')
 api.add_resource(Notification_Channels, '/notification_channels')
 api.add_resource(Notification_Channels_By_Id, '/notification_channels/<channel_id>')
 

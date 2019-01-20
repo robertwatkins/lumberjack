@@ -6,12 +6,15 @@ in [previous experimentation](https://github.com/robertwatkins/playground-robert
 Once the utility is configured and agents are enabled, notifications will be
 generated when suspicious be behavior is detected.
 
+NOTE:Much of the description on this site is aspirational and does not reflect current functionality.
+
 ### Components
 **Admin Console**
-
+![Admin Console Screenshot](images/clientscreenshot.png)
 The admin console allows security users to identify the location of log files to analyze as well as what kinds of analysis to perform.
 
 Once that configuration is in place, a 'Notification Channel' is selected and the agent can be enabled to start anlyzing the logs.
+
 
 **Training Daemon**
 

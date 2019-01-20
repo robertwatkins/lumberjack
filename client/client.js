@@ -73,7 +73,7 @@ function display_agent(json){
          training_percent_complete = 100;
     }
     else {
-         training_percent_complete = 50;
+         training_percent_complete = training_status;
     }
 
     showTrainingProgress(agent_id,training_percent_complete);
@@ -193,7 +193,7 @@ function showTrainingProgress(id,complete){
     ctx.canvas.height = 30;
     data = {
         datasets: [{
-            data: [0, 0],
+            data: [0, 100],
             backgroundColor: ['green', 'lightgray']
         }],
         labels:['Complete','Incomplete']
@@ -205,9 +205,13 @@ function showTrainingProgress(id,complete){
                 display: false
         }
     };
+    console.log(complete);
+    console.log(100 - complete);
+    console.log(data)
     data.datasets[0].data[0]=complete;
     data.datasets[0].data[1]=100 - complete;
-      var myPieChart = new Chart(ctx,{
+    console.log(data)
+    var myPieChart = new Chart(ctx,{
         type: 'pie',
         data: data,
         options: options

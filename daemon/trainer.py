@@ -2,7 +2,7 @@
 import sys, time, requests, json
 from daemon import Daemon
 
-class MyDaemon(Daemon):
+class Trainer(Daemon):
     apiServer = "http://127.0.0.1:8888"
 
     def getNextAgentToTrain(self):
@@ -45,7 +45,7 @@ class MyDaemon(Daemon):
 
 
 if __name__ == "__main__":
-    daemon = MyDaemon('/tmp/trainer.pid')
+    daemon = Trainer('/tmp/trainer.pid')
     if len(sys.argv) == 2:
         if 'start' == sys.argv[1]:
             daemon.start()

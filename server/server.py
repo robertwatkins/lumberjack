@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 #pip install flask flask-jsonpify flask-sqlalchemy flask-restful flask-cache
 import traceback
 from flask import Flask, request

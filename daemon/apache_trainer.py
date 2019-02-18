@@ -16,6 +16,8 @@ from mpl_toolkits.mplot3d import Axes3D
 from sklearn.cluster import DBSCAN
 from sklearn.metrics.pairwise import pairwise_distances
 import pickle
+import json
+import requests
 
 # PREREQUISITES
 # pip3 install pandas
@@ -38,28 +40,47 @@ agent_id = None
 data_root_path = None
 clustering = None
 sample_n_gram_list_as_ids = None
+id = None
+response = None
 
-def train(path):
-    data_root_path = path
+def train(id):
+    url = apiServer + "/agents/" + str(id)
+    response = json.loads(requests.get(url).content)
+    data_root_path =  response["agent"][0]["log_path"]
     print('in apache trainer: path='+data_root_path)
-    if sanityCheckPath(path):
+    if sanityCheckPath(data_root_path):
+        id = response["agent"][0]["agent_id"]
         isSuccessful = start(data_root_path)
     else:
         return False
     return isSuccessful
 
-def start(path):
+def start():
     # read this document to follow this method
     # https://github.com/robertwatkins/playground-robert/blob/master/Python/Jupyter/apache/ApacheNGram-Experiment2.ipynb
-    training_data = getTrainingData(path)
+    setProgressPercent(5)
+    training_data = getTrainingData(data_root_path)
+    setProgressPercent(10)
     unique_url_map = replacePathWithID(training_data)
+    setProgressPercent(15)
     ngram_as_path = findNgrams(nGramLength)
+    setProgressPercent(20)
     distance_matrix = calculateDistanceMatrix(ngram_as_path)
+    setProgressPercent(85)
     cluster_options = calculateClusterOptions()
+    setProgressPercent(90)
     preparePrediction()
+    setProgressPercent(95)
     # evaluate options for prediction
     saveAgentData()
+    setProgressPercent(100)
     return True
+
+def setProgressPercent(percent):
+    url = apiServer + "/agents/" + str(id)
+    response["agent"][0]["training_status"] = percent
+    headers = json.loads('{"Content-Type": "application/json"}')
+    requests.put(url, data=json.dumps(response), headers=headers)
 
 def preparePrediction():
     i = 20
